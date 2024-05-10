@@ -4,21 +4,19 @@
 //
 //  Created by Jannik Scheider on 27.04.24.
 //
-
 import SwiftUI
 import CoreData
 
-
 struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjContext
-    @FetchRequest(sortDescriptors: []) var medikament: FetchedResults<Medikament>
-        
+    @FetchRequest(sortDescriptors: []) var medikamente: FetchedResults<Medikament>
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(medikament) { medikament in
-                        NavigationLink(destination: EditMedikamentView(medikament: medikament)) {
+                    ForEach(medikamente) { medikament in
+                        NavigationLink(value: medikament){
                             HStack {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text(medikament.name!)
@@ -31,25 +29,29 @@ struct ContentView: View {
                     .onDelete(perform: deleteMedikament)
                 }
                 .listStyle(.plain)
+                .navigationDestination(for: Medikament.self){ m in
+                    EditMedikamentView(medikament: m)
+                }
             }
             .navigationTitle("Medikamente")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: EingabeMedikamentView()) {
+                    NavigationLink {
+                        EingabeMedikamentView()
+                    } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
         }
-        .navigationViewStyle(.stack) // Removes sidebar on iPad
     }
     
-    // Deletes medikament at the current offset
+    // Deletes medikament at the current offsets
     private func deleteMedikament(offsets: IndexSet) {
         withAnimation {
-            offsets.map { medikament[$0] }
+            offsets.map { medikamente[$0] }
             .forEach(managedObjContext.delete)
-            
+
             // Saves to our database
             DataController().save(context: managedObjContext)
         }
