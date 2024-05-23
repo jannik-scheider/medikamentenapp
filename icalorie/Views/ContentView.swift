@@ -46,17 +46,14 @@ struct ContentView: View {
         }
     }
     
-    // Deletes medikament at the current offsets
     private func deleteMedikament(offsets: IndexSet) {
         withAnimation {
-            offsets.map { medikamente[$0] }
-            .forEach(managedObjContext.delete)
-
-            // Saves to our database
-            DataController().save(context: managedObjContext)
+            offsets.map { medikamente[$0] }.forEach(managedObjContext.delete)
+            DataController.shared.save(context: managedObjContext)
         }
     }
 }
+
 
 #Preview {
     ContentView()

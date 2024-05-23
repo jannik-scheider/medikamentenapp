@@ -9,28 +9,30 @@ import Foundation
 import CoreData
 
 class DataController: ObservableObject {
-    // Responsible for preparing a model
-    let container = NSPersistentContainer(name: "MedikamentModel")
-    
+    static let shared = DataController()
+    let container: NSPersistentContainer
+
     init() {
+        container = NSPersistentContainer(name: "MedikamentModel")
         container.loadPersistentStores { description, error in
             if let error = error {
                 print("Failed to load data in DataController \(error.localizedDescription)")
             }
         }
     }
-    
+
     func save(context: NSManagedObjectContext) {
-        do {
-            try context.save()
-            print("Data saved successfully")
-        } catch {
-            // Handle errors in our database
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        if context.hasChanges {
+            do {
+                try context.save()
+                print("Data saved successfully")
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
         }
     }
-    
+
     func addMedikament(name: String, date: Date, context: NSManagedObjectContext) {
         let medikament = Medikament(context: context)
         medikament.id = UUID()
@@ -39,7 +41,7 @@ class DataController: ObservableObject {
         
         save(context: context)
     }
-    
+
     func editMedikament(medikament: Medikament, name: String, date: Date, context: NSManagedObjectContext) {
         medikament.date = date
         medikament.name = name

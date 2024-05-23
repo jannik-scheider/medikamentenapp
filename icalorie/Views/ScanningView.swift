@@ -40,16 +40,32 @@ struct ScanningView: View {
     }
 
     private var mainView: some View {
-        DataScannerView(
-            recognizedItems: $vm.recognizedItems,
-            recognizedDataType: vm.recognizedDataType,
-            recognizesMultipleItems: false)
+        ZStack{
+            DataScannerView(
+                recognizedItems: $vm.recognizedItems,
+                recognizedDataType: vm.recognizedDataType,
+                recognizesMultipleItems: false)
             .background(Color.gray.opacity(0.3))
             .ignoresSafeArea()
             .id(vm.dataScannerAccessStatus.hashValue)
             .onAppear {
                 print("Barcode scanning view is active")
             }
+            
+            VStack {
+                Spacer()
+                Button("Aktion ausführen") {
+                    // Führe hier die gewünschte Aktion aus
+                    print("Button wurde gedrückt")
+                }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding()
+            }
+        }
     }
+
 }
 

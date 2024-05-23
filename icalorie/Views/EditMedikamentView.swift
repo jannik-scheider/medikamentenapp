@@ -19,22 +19,46 @@ struct EditMedikamentView: View {
     var body: some View {
         Form {
             Section() {
-                TextField("\(medikament.name!)", text: $name)
+                TextField("Medikamentname", text: $name)
                     .onAppear {
-                        name = medikament.name!
-                        date = medikament.date!
+                        name = medikament.name ?? ""
+                        date = medikament.date ?? Date()
                     }
                 DatePicker("Haltbarkeitsdatum", selection: $date, displayedComponents: .date)
                             
                 HStack {
                     Spacer()
                     Button("Submit") {
-                        DataController().editMedikament(medikament: medikament, name: name, date: date, context: managedObjContext)
+                        DataController.shared.editMedikament(medikament: medikament, name: name, date: date, context: managedObjContext)
                         dismiss()
                     }
                     Spacer()
                 }
             }
         }
+    }
+}
+
+#Preview {
+    let context = DataController.shared.container.viewContext
+    let medikament = Medikament(context: context)
+    medikament.name = "Beispielmedikament"
+    medikament.date = Date()
+    medikament.id = UUID()
+
+    return EditMedikamentView(medikament: medikament)
+        .environment(\.managedObjectContext, context)
+}
+
+struct EditMedikamentView_Previews: PreviewProvider {
+    static var previews: some View {
+        let context = DataController.shared.container.viewContext
+        let medikament = Medikament(context: context)
+        medikament.name = "Beispielmedikament"
+        medikament.date = Date()
+        medikament.id = UUID()
+
+        return EditMedikamentView(medikament: medikament)
+            .environment(\.managedObjectContext, context)
     }
 }

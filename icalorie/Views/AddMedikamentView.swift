@@ -24,7 +24,7 @@ struct AddMedikamentView: View {
                     HStack {
                         Spacer()
                         Button("Submit") {
-                            DataController().addMedikament(
+                            DataController.shared.addMedikament(
                                 name: name,
                                 date: date,
                                 context: managedObjContext)

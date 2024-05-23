@@ -9,13 +9,13 @@ import SwiftUI
 
 @main
 struct icalorieApp: App {
-    @StateObject private var dataController = DataController()
+    @StateObject private var dataController = DataController.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext,
-                              dataController.container.viewContext)
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }
+
